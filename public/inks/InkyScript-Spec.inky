@@ -1,0 +1,378 @@
+// Copyright (c) 2025 KibaOfficial
+// Inky DSL - Complete Specification
+// https://opensource.org/licenses/MIT
+
+// ============================================
+// 0. CHARACTER DEFINITIONS
+// ============================================
+
+// Character Definition mit Attributen
+@char MC
+    name: "Player"
+    sprite: "Player.png"
+    color: "#4A90E2"
+    
+@char Sayori
+    name: "Sayori"
+    sprite: "sayori/{expression}.png"
+    color: "#FF69B4"
+    expressions: happy, sad, angry, surprised, neutral
+    
+@char Narrator
+    name: "Narrator"
+    color: "#CCCCCC"
+
+// ============================================
+// 1. LABELS & JUMPS
+// ============================================
+
+== Start ==
+// Labels definieren Story-Abschnitte
+// Syntax: == LabelName ==
+Narrator "Willkommen bei Inky!"
+-> Introduction
+
+== Introduction ==
+Narrator "Hier lernst du alle Features."
+-> DialogueExamples
+
+
+// ============================================
+// 2. DIALOGUES
+// ============================================
+
+== DialogueExamples ==
+// Einfacher Dialog
+Narrator "Dies ist ein Erzähler-Text."
+
+// Character Dialog
+Sayori "Hallo! Ich bin Sayori."
+MC "Und ich bin der Protagonist."
+
+// Multi-line Dialog (optional für später)
+Sayori "Dies ist ein langer Text.
+    Er kann über mehrere Zeilen gehen.
+    Perfekt für längere Monologe."
+
+-> CommandExamples
+
+
+// ============================================
+// 3. COMMANDS (Scene, Show, Hide, Play, Stop)
+// ============================================
+
+== CommandExamples ==
+// Scene ändern (Hintergrund)
+scene School_Hallway_Day
+
+// Scene mit Transition
+scene School_Hallway_Day with fade
+scene Bedroom_Day with dissolve
+scene Classroom_Day with wipeleft
+
+// Character anzeigen
+show sayori happy
+show sayori happy at center
+show sayori sad at left
+show sayori excited at right
+
+// Character verstecken
+hide sayori
+hide sayori with fadeout
+
+// Musik abspielen
+play music morning_theme.mp3
+play music sad_theme.mp3 fadein 2.0
+
+// Musik stoppen
+stop music
+stop music fadeout 3.0
+
+// Sound Effects
+play sound door_open.wav
+play sound footsteps.mp3
+
+-> VariableExamples
+
+
+// ============================================
+// 4. VARIABLES & EXPRESSIONS
+// ============================================
+
+== VariableExamples ==
+// Variable setzen
+~ affection = 0
+~ playerName = "Alex"
+~ hasKey = false
+~ dayCounter = 1
+
+// Variable ändern
+~ affection += 10
+~ affection -= 5
+~ dayCounter = dayCounter + 1
+
+// Variable in Text nutzen
+Narrator "Dein Name ist {playerName}."
+Sayori "Ich mag dich {affection} von 100 Punkten!"
+Narrator "Es ist Tag {dayCounter}."
+
+// Character Attribute Access (Dot Notation)
+Narrator "Der Hauptcharakter heißt {MC.name}."
+Narrator "Sayoris Farbe ist {Sayori.color}."
+
+-> ConditionExamples
+
+
+// ============================================
+// 5. CONDITIONS (If/Else)
+// ============================================
+
+== ConditionExamples ==
+~ affection = 15
+
+// Einfache Condition
+{ affection > 10 }
+    Sayori "Du bist so nett zu mir!"
+
+{ affection <= 10 }
+    Sayori "Hmm, du könntest netter sein."
+
+// Vergleichsoperatoren: ==, !=, >, <, >=, <=
+{ hasKey == true }
+    Narrator "Du hast den Schlüssel!"
+
+{ playerName == "Alex" }
+    MC "Ja, ich bin Alex."
+
+// Character Attribute Conditions (Dot Notation)
+{ MC.name == "Player" }
+    Narrator "Du benutzt den Standard-Namen."
+
+{ Sayori.color == "#FF69B4" }
+    Narrator "Sayoris Farbe ist Rosa!"
+
+// Logische Operatoren: &&, ||
+{ affection > 10 && hasKey == true }
+    Narrator "Du hast genug Zuneigung UND den Schlüssel!"
+
+{ dayCounter >= 5 || affection > 20 }
+    Narrator "Entweder Tag 5+ oder hohe Zuneigung!"
+
+-> ChoiceExamples
+
+
+// ============================================
+// 6. CHOICES (Entscheidungen)
+// ============================================
+
+== ChoiceExamples ==
+Sayori "Was möchtest du tun?"
+
+// Einfache Choices
+* Sag etwas Nettes -> NicePath
+* Ignoriere sie -> IgnorePath
+* Gib ihr ein Geschenk -> GiftPath
+
+== NicePath ==
+~ affection += 10
+Sayori "Oh, das ist so lieb von dir!"
+-> AfterChoice
+
+== IgnorePath ==
+~ affection -= 5
+Sayori "Oh... okay."
+-> AfterChoice
+
+== GiftPath ==
+~ affection += 20
+~ hasKey = true
+Sayori "Ein Geschenk?! Du bist der Beste!"
+Narrator "Sayori gibt dir einen Schlüssel."
+-> AfterChoice
+
+== AfterChoice ==
+Narrator "Du hast {affection} Zuneigungspunkte."
+-> ConditionalChoices
+
+
+// ============================================
+// 7. CONDITIONAL CHOICES (Bedingte Optionen)
+// ============================================
+
+== ConditionalChoices ==
+Sayori "Was jetzt?"
+
+// Choice nur wenn Bedingung erfüllt
+* [affection >= 20] Gestehe deine Liebe -> ConfessionPath
+* [hasKey == true] Benutze den Schlüssel -> KeyPath
+* Rede normal mit ihr -> NormalPath
+
+== ConfessionPath ==
+MC "Sayori, ich... ich liebe dich."
+Sayori "Wirklich?! Ich liebe dich auch!"
+-> Ending
+
+== KeyPath ==
+Narrator "Du benutzt den Schlüssel."
+Narrator "Die Tür öffnet sich."
+-> SecretRoom
+
+== NormalPath ==
+MC "Lass uns einfach reden."
+Sayori "Klar!"
+-> Ending
+
+
+// ============================================
+// 8. ADVANCED FEATURES
+// ============================================
+
+== SecretRoom ==
+scene Shrine_Spring_Day with fade
+Narrator "Du hast einen geheimen Raum entdeckt!"
+
+// Nested Conditions
+{ affection > 15 }
+    { hasKey == true }
+        Narrator "Du hast beides: Zuneigung UND den Schlüssel!"
+        -> BestEnding
+    { hasKey == false }
+        Narrator "Du hast Zuneigung, aber keinen Schlüssel."
+        -> GoodEnding
+
+{ affection <= 15 }
+    Narrator "Du hast nicht genug Zuneigung."
+    -> BadEnding
+
+
+// ============================================
+// 9. SPECIAL COMMANDS
+// ============================================
+
+== SpecialCommands ==
+// Pause (Spieler muss klicken)
+Narrator "Dies ist ein wichtiger Moment."
+pause
+
+// Wait (automatische Verzögerung in Sekunden)
+Narrator "Warte kurz..."
+wait 2.0
+
+// Clear (lösche Text)
+clear
+
+// Animation / Effects
+shake camera
+flash white
+
+// Character Emotions mit Sprites
+show sayori happy
+show sayori sad
+show sayori angry
+show sayori surprised
+show sayori neutral
+
+-> Ending
+
+
+// ============================================
+// 10. ENDINGS
+// ============================================
+
+== BestEnding ==
+scene City_Night with fade
+Narrator "Das beste Ende! Du hast alles richtig gemacht."
+~ ending = "best"
+-> Credits
+
+== GoodEnding ==
+scene City_Evening with fade
+Narrator "Ein gutes Ende. Du hast dein Bestes gegeben."
+~ ending = "good"
+-> Credits
+
+== BadEnding ==
+scene City_Raining with fade
+Narrator "Ein trauriges Ende. Vielleicht beim nächsten Mal?"
+~ ending = "bad"
+-> Credits
+
+== Ending ==
+Narrator "Danke fürs Spielen!"
+-> Credits
+
+
+// ============================================
+// 11. SPECIAL LABELS
+// ============================================
+
+== Credits ==
+clear
+scene Bedroom_Night_Dark
+Narrator "Credits"
+Narrator "Entwickelt mit Inky Engine"
+Narrator "Story: KibaOfficial"
+// END - Parser stoppt hier automatisch
+
+
+// ============================================
+// SYNTAX ZUSAMMENFASSUNG
+// ============================================
+
+/*
+CHARACTER DEFINITIONS:
+  @char CharacterName
+      name: "Display Name"
+      sprite: "path/to/sprite.png"
+      color: "#HEXCOLOR"
+      expressions: happy, sad, angry, etc.
+  
+  Access: {CharName.attribute}
+  Conditions: { CharName.attribute == "value" }
+
+LABELS:
+  == LabelName ==
+
+JUMPS:
+  -> LabelName
+
+DIALOGUE:
+  CharacterName "Text"
+  Character "Text mit {variable}"
+  Character "Text mit {CharName.attribute}"
+
+COMMANDS:
+  scene background [with transition]
+  show character [emotion] [at position] [with transition]
+  hide character [with transition]
+  play music filename.mp3 [fadein duration]
+  play sound filename.wav
+  stop music [fadeout duration]
+  pause
+  wait duration
+  clear
+  shake camera
+  flash color
+
+VARIABLES:
+  ~ varName = value
+  ~ varName += value
+  ~ varName -= value
+
+CONDITIONS:
+  { condition }
+      Text oder Commands
+
+CHOICES:
+  * Choice Text -> Label
+  * [condition] Choice Text -> Label
+
+OPERATORS:
+  Vergleich: ==, !=, >, <, >=, <=
+  Logik: &&, ||, !
+  Math: +, -, *, /, %
+
+COMMENTS:
+  // Single line comment
+  /* Multi line comment */
+*/

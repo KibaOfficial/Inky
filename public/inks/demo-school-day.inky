@@ -1,0 +1,167 @@
+// Example Visual Novel Scene using organized assets
+// Copyright (c) 2025 KibaOfficial
+
+// Character Definitions
+@char MC
+    name: "Player"
+    sprite: "Player.png"
+    color: "#4A90E2"
+    
+@char Sayori
+    name: "Sayori"
+    sprite: "sayori/{expression}.png"
+    color: "#FF69B4"
+    
+@char Narrator
+    name: "Narrator"
+    color: "#CCCCCC"
+
+// Story Start
+== Start ==
+scene Bedroom_Day
+Narrator "A new day begins..."
+
+~ playerName = "Alex"
+
+MC "Time to get up and start the day."
+
+scene Classroom_Day
+Narrator "You arrive at school."
+
+show sayori happy at center
+Sayori "Good morning, {playerName}!"
+Sayori "How are you today?"
+
+* Say you're doing well -> PositivePath
+* Say you're tired -> TiredPath
+* Stay silent -> SilentPath
+
+== PositivePath ==
+~ affection = 10
+show sayori happy at center
+MC "I'm doing great! Thanks for asking."
+Sayori "That's wonderful! I'm so glad to hear that!"
+-> SchoolDay
+
+== TiredPath ==
+~ affection = 5
+show sayori sad at center
+MC "I'm pretty tired, honestly..."
+Sayori "Oh no... Maybe you should rest during lunch?"
+-> SchoolDay
+
+== SilentPath ==
+~ affection = 0
+show sayori surprised at center
+Sayori "Um... are you okay?"
+Narrator "{MC.name} just nods silently."
+-> SchoolDay
+
+== SchoolDay ==
+scene School_Hallway_Day
+hide sayori
+Narrator "Classes pass by quickly."
+
+scene Cafeteria_Day
+show sayori neutral at left
+Sayori "Want to have lunch together?"
+
+{ affection >= 10 }
+    MC "Of course! I'd love to."
+    show sayori happy at left
+    Sayori "Yay! Let's go!"
+    -> LunchTogether
+    
+{ affection < 10 }
+    MC "Maybe next time..."
+    show sayori sad at left
+    Sayori "Oh... okay then."
+    -> AloneLunch
+
+== LunchTogether ==
+scene Cafeteria_Day
+show sayori happy at center
+Narrator "You and Sayori enjoy lunch together."
+Sayori "This is so nice! We should do this more often."
+MC "I agree."
+
+~ affection += 5
+-> AfterSchool
+
+== AloneLunch ==
+scene Cafeteria_Day
+Narrator "You eat lunch alone today."
+Narrator "Maybe you should have been more friendly..."
+-> AfterSchool
+
+== AfterSchool ==
+scene School_Hallway_Day
+Narrator "School is over for the day."
+
+{ affection >= 15 }
+    show sayori happy at center
+    Sayori "Hey {playerName}, want to walk home together?"
+    
+    * Walk with Sayori -> WalkTogether
+    * Politely decline -> DeclineWalk
+    
+{ affection < 15 }
+    Narrator "You head home alone."
+    -> EndDay
+
+== WalkTogether ==
+scene Street_Spring_Evening
+show sayori happy at right
+Narrator "You walk home with Sayori through the peaceful evening streets."
+
+Sayori "Today was really fun!"
+MC "Yeah, it was nice spending time with you."
+
+show sayori happy at right
+Sayori "We should do this again tomorrow!"
+
+~ affection += 10
+-> GoodEnding
+
+== DeclineWalk ==
+scene Street_Spring_Evening
+Narrator "You walk home alone, watching the sunset."
+MC "Maybe I should have accepted her offer..."
+
+~ affection -= 5
+-> NormalEnding
+
+== GoodEnding ==
+scene Bedroom_Night
+Narrator "Back home, you reflect on the day."
+MC "Today was a great day. I'm glad I got to know Sayori better."
+Narrator "Affection: {affection}"
+Narrator "You have a good feeling about tomorrow."
+-> Credits
+
+== NormalEnding ==
+scene Bedroom_Night
+Narrator "Back home, you wonder if you made the right choices."
+Narrator "Affection: {affection}"
+Narrator "Maybe tomorrow will be different."
+-> Credits
+
+== EndDay ==
+scene Bedroom_Night
+Narrator "Another day ends."
+Narrator "Affection: {affection}"
+-> Credits
+
+== Credits ==
+clear
+scene Bedroom_Night_Dark
+Narrator "Thank you for playing!"
+Narrator "This demo showcases:"
+Narrator "- Character System with Attributes"
+Narrator "- Dynamic Backgrounds"
+Narrator "- Character Sprites with Expressions"
+Narrator "- Choices and Branching Paths"
+Narrator "- Variable Tracking"
+Narrator "- String Interpolation"
+Narrator " "
+Narrator "Made with InkyScript Engine"
