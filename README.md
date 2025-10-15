@@ -216,8 +216,6 @@ MIT License - see LICENSE file for details
 
 Inspired by:
 - **Ren'Py** - Visual Novel engine
-- **Ink** - Narrative scripting language by Inkle Studios
-- **Twine** - Interactive fiction tool
 
 ---
 
