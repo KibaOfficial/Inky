@@ -89,15 +89,15 @@ npm install
 
 ```bash
 # Run the React-based player
-npm run dev:react
+npm run dev
 ```
 
-Then open http://localhost:3000/index-react.html
+Then open http://localhost:3000/index.html
 
 ### Build for Production
 
 ```bash
-npm run build:react
+npm run build
 ```
 
 ## 📖 Documentation
