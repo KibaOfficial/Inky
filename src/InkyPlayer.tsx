@@ -10,7 +10,6 @@ import { StepInterpreter } from "./core/inkyscript/StepInterpreter";
 import { VisualNovelView } from "./core/UI/VisualNovelView";
 import { VisualNovelState } from "./core/UI/VisualNovelView";
 import { InkyTheme, defaultTheme } from "./core/UI/theme";
-import { Node } from "./core/inkyscript/types";
 
 interface InkyPlayerProps {
   scriptPath?: string;        // Path to .inky file
@@ -21,7 +20,7 @@ interface InkyPlayerProps {
 }
 
 export const InkyPlayer: React.FC<InkyPlayerProps> = ({
-  scriptPath = "/inks/demo-school-day.inky",
+  scriptPath,
   script,
   theme = defaultTheme,
   assetBasePath = "/assets",

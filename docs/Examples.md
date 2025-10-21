@@ -7,6 +7,7 @@
 - [Hello World](#hello-world)
 - [Simple Conversation](#simple-conversation)
 - [Branching Choices](#branching-choices)
+- [Audio Example](#audio-example)
 - [Affection System](#affection-system)
 - [Multiple Stat Tracking](#multiple-stat-tracking)
 - [Complex Conditionals](#complex-conditionals)
@@ -114,6 +115,62 @@ MC "I love the sea!"
 == End ==
 Guide "Your journey ends here."
 Narrator "Thanks for playing!"
+```
+
+---
+
+## Audio Example
+
+Using background music and sound effects:
+
+```inky
+@char MC
+    name: "You"
+    color: "#4A90E2"
+
+@char Friend
+    name: "Friend"
+    sprite: "friend/{expression}.png"
+    color: "#FF69B4"
+
+== Start ==
+scene Cafe_Interior
+play music cafe_ambience.mp3 loop fadein 2000
+
+show friend happy at center
+Friend "Welcome! I love this cafe."
+
+play sound coffee_pour.mp3 0.5
+Friend "Let me get you some coffee."
+
+* Go outside -> Outside
+* Stay inside -> StayInside
+
+== Outside ==
+scene Park_Day
+stop music fadeout 1000
+play music nature_sounds.mp3 loop fadein 1500
+
+play sound birds_chirping.mp3 loop 0.3
+
+show friend happy at center
+Friend "The weather is so nice today!"
+
+-> End
+
+== StayInside ==
+show friend neutral at center
+Friend "It's cozy in here, isn't it?"
+
+play sound door_chime.mp3 0.4
+Friend "Someone just came in."
+
+-> End
+
+== End ==
+stop music fadeout 2000
+stop sound fadeout 500
+Friend "Thanks for hanging out!"
 ```
 
 ---

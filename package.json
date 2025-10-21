@@ -1,6 +1,6 @@
 {
   "name": "inky-engine",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Ren'Py-inspired Visual Novel Engine with InkyScript DSL",
   "type": "module",
   "scripts": {

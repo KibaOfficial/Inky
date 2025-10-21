@@ -16,6 +16,7 @@
 - [Jumps](#jumps)
 - [String Interpolation](#string-interpolation)
 - [Comments](#comments)
+- [Audio System](#audio-system)
 - [Complete Example](#complete-example)
 
 ---
@@ -274,13 +275,65 @@ hide sayori
 clear
 ```
 
-### Audio Commands (Planned)
+### Audio Commands
+
+**Play Music**
+```inky
+play music <filename> [loop] [fadein <duration>]
+```
+
+**Play Sound**
+```inky
+play sound <filename> [loop] [<volume>]
+```
+
+**Stop Music**
+```inky
+stop music [fadeout <duration>]
+```
+
+**Stop Sound**
+```inky
+stop sound [fadeout <duration>]
+```
+
+**Parameters:**
+- `filename`: Audio file path (e.g., `bgm_school.mp3`)
+- `loop`: Optional, loops the audio indefinitely
+- `fadein <duration>`: Optional, fade-in duration in milliseconds
+- `fadeout <duration>`: Optional, fade-out duration in milliseconds
+- `volume`: Optional, volume level (0.0 to 1.0, e.g., `0.5` for 50%)
+
+**Examples:**
+```inky
+// Play background music with loop and fade-in
+play music bgm_school.mp3 loop fadein 2000
+
+// Play sound effect at 50% volume
+play sound door_open.mp3 0.5
+
+// Play ambient sound with loop
+play sound school_ambience.mp3 loop 0.3
+
+// Stop music with fade-out
+stop music fadeout 1000
+
+// Stop all sound effects
+stop sound fadeout 500
+```
+
+### Planned Commands (Not Yet Implemented)
+
+The following commands are recognized by the parser but not yet fully implemented:
 
 ```inky
-play music "filename.mp3"
-play sound "effect.wav"
-stop music
+wait <duration>     // Pause execution for duration
+shake <intensity>   // Screen shake effect
+flash <color>       // Screen flash effect
+pause music         // Pause/resume music playback
 ```
+
+These commands will be added in future versions.
 
 ---
 
@@ -484,6 +537,207 @@ Add notes to your script (ignored during execution).
 // Morning scene begins
 scene Bedroom_Day
 Narrator "A new day begins..."  // This shows at the start
+```
+
+---
+
+## Audio System
+
+InkyScript includes a powerful audio system for background music and sound effects.
+
+### Music vs. Sounds
+
+| Feature | Music | Sound |
+|---------|-------|-------|
+| Purpose | Background music, themes | Short effects, ambience |
+| Looping | Supported with `loop` | Supported with `loop` |
+| Fade In/Out | Yes (`fadein`, `fadeout`) | No |
+| Volume Control | Global + fade | Per-sound control |
+| Multiple Simultaneous | One at a time | Multiple sounds can play |
+
+### Play Music
+
+Background music with optional looping and fade-in.
+
+**Syntax:**
+```inky
+play music <filename> [loop] [fadein <duration>]
+```
+
+**Examples:**
+```inky
+// Simple music playback
+play music main_theme.mp3
+
+// Loop background music
+play music bgm_school.mp3 loop
+
+// Music with 2-second fade-in
+play music dramatic_scene.mp3 fadein 2000
+
+// Looping music with fade-in
+play music ambient_music.ogg loop fadein 3000
+```
+
+### Play Sound
+
+Sound effects with optional looping and volume control.
+
+**Syntax:**
+```inky
+play sound <filename> [loop] [<volume>]
+```
+
+**Volume Range:** `0.0` (mute) to `1.0` (full volume)
+
+**Examples:**
+```inky
+// Simple sound effect
+play sound door_open.mp3
+
+// Sound at 50% volume
+play sound footsteps.wav 0.5
+
+// Looping ambient sound at 30% volume
+play sound school_ambience.mp3 loop 0.3
+
+// Quiet background sound
+play sound rain.ogg loop 0.2
+```
+
+### Stop Music
+
+Stop currently playing music with optional fade-out.
+
+**Syntax:**
+```inky
+stop music [fadeout <duration>]
+```
+
+**Examples:**
+```inky
+// Stop music immediately
+stop music
+
+// Stop with 1-second fade-out
+stop music fadeout 1000
+
+// Stop with long fade-out
+stop music fadeout 3000
+```
+
+### Stop Sound
+
+Stop all currently playing sound effects with optional fade-out.
+
+**Syntax:**
+```inky
+stop sound [fadeout <duration>]
+```
+
+**Examples:**
+```inky
+// Stop all sounds immediately
+stop sound
+
+// Stop all sounds with fade-out
+stop sound fadeout 500
+
+// Stop with smooth fade-out
+stop sound fadeout 1000
+```
+
+### Audio File Formats
+
+Supported formats (browser-dependent):
+- **MP3** - Best compatibility
+- **OGG** - Good quality, open format
+- **WAV** - Uncompressed, larger files
+- **M4A** - Apple devices
+
+**Recommendation:** Use MP3 for maximum compatibility.
+
+### Audio Asset Organization
+
+```
+public/assets/
+  music/          # Background music
+    bgm_school.mp3
+    bgm_dramatic.mp3
+    main_theme.mp3
+  sounds/         # Sound effects
+    door_open.mp3
+    footsteps.wav
+    school_ambience.mp3
+```
+
+### Complete Audio Example
+
+```inky
+== Start ==
+// Morning scene with ambient music
+scene Bedroom_Day
+play music morning_theme.mp3 loop fadein 2000
+Narrator "A peaceful morning begins..."
+
+== School ==
+// Transition to school with sound
+play sound door_open.mp3
+scene School_Hallway
+
+// Add ambient school sounds
+play sound school_ambience.mp3 loop 0.3
+
+show sayori happy at center
+Sayori "Good morning!"
+
+== DramaticScene ==
+// Stop current music and switch to dramatic
+stop music fadeout 1000
+play music dramatic_theme.mp3 fadein 1500
+
+Narrator "Something unexpected happens..."
+
+== Ending ==
+// Fade out all audio
+stop music fadeout 3000
+Narrator "The end."
+```
+
+### Audio Tips
+
+**Performance:**
+- Keep audio files optimized (compress music to 128-192 kbps)
+- Use shorter loops for ambient sounds
+- Preload critical audio files
+
+**Mixing:**
+```inky
+// Background music at normal volume
+play music bgm.mp3 loop
+
+// Ambient sounds at lower volume
+play sound rain.mp3 loop 0.2
+play sound wind.mp3 loop 0.15
+
+// Sound effects at full volume
+play sound door_slam.mp3
+```
+
+**Transitions:**
+```inky
+// Smooth scene transition
+stop music fadeout 2000
+scene NewLocation
+play music new_theme.mp3 fadein 2000
+```
+
+**Layering:**
+```inky
+// Multiple simultaneous sounds
+play sound ambient_crowd.mp3 loop 0.3
+play sound birds.mp3 loop 0.2
+play sound wind.mp3 loop 0.15
 ```
 
 ---

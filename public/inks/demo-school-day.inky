@@ -26,6 +26,7 @@ Narrator "A new day begins..."
 MC "Time to get up and start the day."
 
 scene Classroom_Day
+play sound school_ambience.mp3 0.3
 Narrator "You arrive at school."
 
 show sayori happy at center

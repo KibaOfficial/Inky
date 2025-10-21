@@ -273,13 +273,16 @@ export class Lexer {
 
       const commandMatch = line.match(this.commandPattern);
       if (commandMatch) {
+        const argsString = commandMatch[2].trim();
+        const argsArray = argsString.length > 0 ? argsString.split(/\s+/) : [];
+        
         return {
           type: TokenType.COMMAND,
           value: commandMatch[1], // The command type is more important
           line: lineNumber,
           metadata: {
             command: commandMatch[1], // The command type
-            args: commandMatch[2]     // The arguments
+            args: argsArray           // The arguments as array
           }
         };
       }

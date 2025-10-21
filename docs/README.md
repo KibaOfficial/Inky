@@ -145,12 +145,15 @@ Branching logic:
 
 ### 6. Commands
 
-Scene control:
+Scene and audio control:
 
 ```inky
 scene Background
 show character expression at position
 hide character
+play music bgm.mp3 loop fadein 2000
+play sound effect.mp3 0.5
+stop music fadeout 1000
 ```
 
 ## Documentation Structure
@@ -260,7 +263,7 @@ Start with a simple linear story, then add complexity gradually.
 
 ## Language Features by Version
 
-### Current Version: 1.0
+### Current Version: 1.1
 
 ✅ **Implemented**
 - Character definitions with attributes
@@ -268,14 +271,18 @@ Start with a simple linear story, then add complexity gradually.
 - Dialogue system
 - Variables (numbers, strings, booleans)
 - Commands (scene, show, hide, clear)
+- Audio system (play music/sound, stop music/sound)
+- Fade in/out effects for audio
+- Multiple simultaneous sound effects
 - Choices with conditions
 - Conditionals with operators
 - String interpolation
 - Comments
 
 🚧 **Planned for Future**
-- Audio commands (play, stop)
-- Transitions and effects
+- Visual transitions and effects (fade, dissolve, wipe)
+- Screen effects (shake, flash)
+- Wait/timing commands
 - Save/load system
 - Rollback/history
 - Advanced expressions

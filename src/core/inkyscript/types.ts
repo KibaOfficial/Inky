@@ -45,7 +45,7 @@ export interface VariableNode {
 export interface CommandNode {
   type: 'Command';
   command: string; // e.g. "scene", "show", "play"
-  args: string; // e.g. "school_hallway", "sayori happy"
+  args: string[]; // e.g. ["school_hallway"], ["sayori", "happy"]
   line: number;
 }
 
@@ -98,3 +98,11 @@ export interface ScriptAST {
   labels: Record<string, LabelNode>; // Key = Label Name
   characters: Record<string, CharacterDefNode>; // Key = Character Name
 }
+
+export type AudioCommand =
+  | 'play music'
+  | 'stop music'
+  | 'pause music'
+  | 'resume music'
+  | 'play sound'
+  | 'stop sound';
