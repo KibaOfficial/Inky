@@ -22,7 +22,7 @@ export const Choices: React.FC<ChoicesProps> = ({ choices, onSelect }) => {
   const availableChoices = choices.filter(choice => choice.enabled !== false);
 
   return (
-    <div className="absolute bottom-35 left-0 right-0 px-4" style={{ zIndex: 150 }}>
+    <div className="absolute bottom-36 left-0 right-0 px-4" style={{ zIndex: 150 }}>
       <div className="max-w-4xl mx-auto">
         <div className="bg-linear-to-b from-black/60 to-black/40 backdrop-blur-md rounded-lg shadow-2xl p-4 border border-white/10">
           <div className="space-y-2">

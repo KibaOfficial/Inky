@@ -93,6 +93,9 @@ export const InkyPlayer: React.FC<InkyPlayerProps> = ({
     }
 
     console.log("[InkyPlayer] Story started");
+    setStoryEnded(false);
+    setVnState(null);
+    interp.reset();
     interp.start();
     advance(interp);
   };
