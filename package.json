@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "pnpm --filter @inky/engine dev",
     "build": "pnpm --filter @inky/engine build",
-    "build:ext": "pnpm --filter @inky/vscode-ext build",
+    "build:ext": "pnpm --filter inkyscript build",
     "preview": "pnpm --filter @inky/engine preview",
-    "compile": "pnpm --filter @inky/vscode-ext compile"
+    "compile": "pnpm --filter inkyscript compile"
   }
 }

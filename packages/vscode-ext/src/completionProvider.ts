@@ -27,7 +27,7 @@ export class InkyScriptCompletionProvider implements vscode.CompletionItemProvid
         // ── Label definition ───────────────────────────────────
         if (trimmed === '=' || trimmed === '==') {
             const item = new vscode.CompletionItem('Label', vscode.CompletionItemKind.Snippet);
-            item.insertText = new vscode.SnippetString('= ${1:LabelName} ==\n$0');
+            item.insertText = new vscode.SnippetString('== ${1:LabelName} ==\n$0');
             item.documentation = new vscode.MarkdownString('Create a new label/scene');
             completionItems.push(item);
             return completionItems;

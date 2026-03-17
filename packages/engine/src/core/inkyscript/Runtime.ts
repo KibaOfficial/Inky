@@ -251,6 +251,15 @@ export class Runtime {
       }
     }
 
+    // Bare identifier or Char.attr — treat as boolean
+    const barePattern = /^[\w.]+$/;
+    if (barePattern.test(expr)) {
+      const val = expr.includes('.')
+        ? this.getCharacterAttribute(expr.split('.')[0], expr.split('.')[1])
+        : this.getVariable(expr);
+      return Boolean(val);
+    }
+
     console.warn(`[Runtime] Unknown condition: ${expr}`);
     return false;
   }

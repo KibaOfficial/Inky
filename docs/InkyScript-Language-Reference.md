@@ -398,7 +398,7 @@ The `{ else }` block is optional.
 
 ### Sequential Condition Blocks
 
-Multiple condition blocks in sequence are **independent** — each is evaluated separately. They are **not** chained as . Use  explicitly when you want mutually exclusive branches.
+Multiple condition blocks in sequence are **independent** — each is evaluated separately. They are **not** chained as `else if` statements. Use `{ else }` explicitly when you want mutually exclusive branches.
 
 ```inky
 // These two are evaluated independently (both can execute if both are true)
@@ -548,9 +548,9 @@ Any attribute defined on a character via `@char` can be accessed with `{CharName
 
 | Access | Example | Returns |
 |--------|---------|---------|
-|  |  | Display name |
-|  |  | Hex color string |
-|  |  | Sprite path/template |
+| `{Char.name}` | `{Sayori.name}` | Display name |
+| `{Char.color}` | `{Sayori.color}` | Hex color string |
+| `{Char.sprite}` | `{Sayori.sprite}` | Sprite path/template |
 
 ```inky
 Narrator "Her name is {Sayori.name} and her color is {Sayori.color}."

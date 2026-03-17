@@ -120,7 +120,7 @@ Sayori "My name is {Sayori.name}."
 
 ## Requirements
 
-- Visual Studio Code 1.74.0 or higher
+- Visual Studio Code 1.99.0 or higher
 
 ## Release Notes
 
