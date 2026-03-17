@@ -35,6 +35,7 @@ CharacterName "What they say"
 
 ## Commands
 
+### Scene & Characters
 ```inky
 scene BackgroundName                    # Change background
 show character expression at position   # Show character
@@ -42,10 +43,18 @@ hide character                          # Hide character
 clear                                   # Clear all characters
 ```
 
-### Positions
+#### Positions
 - `left`
 - `center`
 - `right`
+
+### Audio
+```inky
+play music filename.mp3 [loop] [fadein <ms>]    # Play background music
+play sound filename.mp3 [loop] [volume]         # Play sound effect
+stop music [fadeout <ms>]                       # Stop music
+stop sound [fadeout <ms>]                       # Stop all sounds
+```
 
 ## Choices
 
@@ -58,16 +67,29 @@ clear                                   # Clear all characters
 
 ```inky
 { condition }
-    content...
+    content if true...
+{ else }
+    content if false...
 ```
 
-### Operators
+### Comparison Operators
 - `==` Equal
 - `!=` Not equal
 - `>` Greater than
 - `<` Less than
 - `>=` Greater or equal
 - `<=` Less or equal
+
+### Logical Operators
+- `&&` And (both must be true)
+- `||` Or (at least one must be true)
+- `()` Parentheses for grouping
+
+```inky
+{ affection >= 10 && knowsSecret == true }
+{ trust >= 5 || isOldFriend == true }
+{ (affection >= 10 && knowsSecret) || trust >= 20 }
+```
 
 ## Jumps
 
@@ -118,6 +140,8 @@ Sayori "That's rude..."
 == End ==
 { affection >= 10 }
     Sayori "Let's be friends!"
+{ else }
+    Sayori "See you around."
 
 Narrator "The end."
 ```

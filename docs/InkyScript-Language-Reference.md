@@ -16,6 +16,7 @@
 - [Jumps](#jumps)
 - [String Interpolation](#string-interpolation)
 - [Comments](#comments)
+- [Audio System](#audio-system)
 - [Complete Example](#complete-example)
 
 ---
@@ -177,6 +178,8 @@ Sayori "That's great! Let's go to class."
 
 Variables store story state (numbers, strings, booleans).
 
+> **Note:** InkyScript intentionally supports only **primitive types** (number, string, boolean). There are no arrays or objects. This keeps the language simple and focused on narrative.
+
 ### Syntax
 
 **Assignment**
@@ -194,11 +197,11 @@ Variables store story state (numbers, strings, booleans).
 
 ### Value Types
 
-| Type | Examples |
-|------|----------|
-| Number | `10`, `-5`, `0` |
-| String | `"Hello"`, `"Player"` |
-| Boolean | `true`, `false` |
+| Type | Examples | Use case |
+|------|----------|---------|
+| Number | `10`, `-5`, `3.14` | Counters, scores, affection |
+| String | `"Hello"`, `"Alex"` | Names, flags with labels |
+| Boolean | `true`, `false` | Flags, switches |
 
 ### Examples
 
@@ -274,13 +277,65 @@ hide sayori
 clear
 ```
 
-### Audio Commands (Planned)
+### Audio Commands
+
+**Play Music**
+```inky
+play music <filename> [loop] [fadein <duration>]
+```
+
+**Play Sound**
+```inky
+play sound <filename> [loop] [<volume>]
+```
+
+**Stop Music**
+```inky
+stop music [fadeout <duration>]
+```
+
+**Stop Sound**
+```inky
+stop sound [fadeout <duration>]
+```
+
+**Parameters:**
+- `filename`: Audio file path (e.g., `bgm_school.mp3`)
+- `loop`: Optional, loops the audio indefinitely
+- `fadein <duration>`: Optional, fade-in duration in milliseconds
+- `fadeout <duration>`: Optional, fade-out duration in milliseconds
+- `volume`: Optional, volume level (0.0 to 1.0, e.g., `0.5` for 50%)
+
+**Examples:**
+```inky
+// Play background music with loop and fade-in
+play music bgm_school.mp3 loop fadein 2000
+
+// Play sound effect at 50% volume
+play sound door_open.mp3 0.5
+
+// Play ambient sound with loop
+play sound school_ambience.mp3 loop 0.3
+
+// Stop music with fade-out
+stop music fadeout 1000
+
+// Stop all sound effects
+stop sound fadeout 500
+```
+
+### Planned Commands (Not Yet Implemented)
+
+The following commands are recognized by the parser but not yet fully implemented:
 
 ```inky
-play music "filename.mp3"
-play sound "effect.wav"
-stop music
+wait <duration>     // Pause execution for duration
+shake <intensity>   // Screen shake effect
+flash <color>       // Screen flash effect
+pause music         // Pause/resume music playback
 ```
+
+These commands will be added in future versions.
 
 ---
 
@@ -312,7 +367,7 @@ Sayori "Want to have lunch together?"
 * Stay quiet -> Neutral
 ```
 
-Choices with conditions only appear if the condition is true.
+Choices with conditions only appear if the condition is true. The condition is evaluated **before rendering** — disabled choices are hidden entirely from the player, not greyed out.
 
 **Multiple Choices**
 ```inky
@@ -334,11 +389,35 @@ Execute content based on conditions.
 
 ```inky
 { condition }
-    content...
-    content...
+    content if true...
+{ else }
+    content if false...
 ```
 
-### Operators
+The `{ else }` block is optional.
+
+### Sequential Condition Blocks
+
+Multiple condition blocks in sequence are **independent** — each is evaluated separately. They are **not** chained as `else if` statements. Use `{ else }` explicitly when you want mutually exclusive branches.
+
+```inky
+// These two are evaluated independently (both can execute if both are true)
+{ affection >= 5 }
+    Sayori "You are kind."
+
+{ affection >= 10 }
+    Sayori "You are amazing!"
+
+// Use else for mutually exclusive branches
+{ affection >= 10 }
+    Sayori "You are amazing!"
+    -> GoodEnding
+{ else }
+    Sayori "We just met."
+    -> NeutralEnding
+```
+
+### Comparison Operators
 
 | Operator | Meaning | Example |
 |----------|---------|---------|
@@ -349,6 +428,16 @@ Execute content based on conditions.
 | `>=` | Greater or equal | `affection >= 15` |
 | `<=` | Less or equal | `level <= 3` |
 
+### Logical Operators
+
+Combine conditions with logical operators. Precedence: `&&` before `||`, use parentheses to override.
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `&&` | And | `affection >= 10 && knowsSecret == true` |
+| `\|\|` | Or | `trust >= 5 \|\| isOldFriend == true` |
+| `()` | Grouping | `(affection >= 10 && knowsSecret) \|\| trust >= 20` |
+
 ### Examples
 
 **Simple Conditional**
@@ -358,19 +447,24 @@ Execute content based on conditions.
     -> GoodEnding
 ```
 
-**Multiple Conditionals**
+**If / Else**
 ```inky
-{ affection >= 15 }
-    Sayori "I love you!"
-    -> BestEnding
-
-{ affection >= 5 }
-    Sayori "You're a good friend."
+{ affection >= 10 }
+    Sayori "I really like you!"
     -> GoodEnding
+{ else }
+    Sayori "Nice to meet you."
+    -> NeutralEnding
+```
 
-{ affection < 5 }
-    Sayori "See you around."
-    -> NormalEnding
+**Logical Operators**
+```inky
+{ affection >= 10 && knowsSecret == true }
+    Sayori "I trust you completely."
+    -> TrueEnding
+
+{ trust >= 5 || isOldFriend == true }
+    Sayori "Good to see you again!"
 ```
 
 **Conditionals with Choices**
@@ -380,8 +474,7 @@ Execute content based on conditions.
 
     * Sure! -> WalkTogether
     * I have plans -> Decline
-
-{ affection < 10 }
+{ else }
     Narrator "She doesn't seem interested in talking."
     -> EndDay
 ```
@@ -450,8 +543,17 @@ Sayori "Hi {playerName}! Nice to meet you!"
 ```
 
 **Character Attributes**
+
+Any attribute defined on a character via `@char` can be accessed with `{CharName.attribute}`.
+
+| Access | Example | Returns |
+|--------|---------|---------|
+| `{Char.name}` | `{Sayori.name}` | Display name |
+| `{Char.color}` | `{Sayori.color}` | Hex color string |
+| `{Char.sprite}` | `{Sayori.sprite}` | Sprite path/template |
+
 ```inky
-Narrator "Her name is {Sayori.name}."
+Narrator "Her name is {Sayori.name} and her color is {Sayori.color}."
 ```
 
 **Multiple Variables**
@@ -484,6 +586,207 @@ Add notes to your script (ignored during execution).
 // Morning scene begins
 scene Bedroom_Day
 Narrator "A new day begins..."  // This shows at the start
+```
+
+---
+
+## Audio System
+
+InkyScript includes a powerful audio system for background music and sound effects.
+
+### Music vs. Sounds
+
+| Feature | Music | Sound |
+|---------|-------|-------|
+| Purpose | Background music, themes | Short effects, ambience |
+| Looping | Supported with `loop` | Supported with `loop` |
+| Fade In/Out | Yes (`fadein`, `fadeout`) | No |
+| Volume Control | Global + fade | Per-sound control |
+| Multiple Simultaneous | One at a time | Multiple sounds can play |
+
+### Play Music
+
+Background music with optional looping and fade-in.
+
+**Syntax:**
+```inky
+play music <filename> [loop] [fadein <duration>]
+```
+
+**Examples:**
+```inky
+// Simple music playback
+play music main_theme.mp3
+
+// Loop background music
+play music bgm_school.mp3 loop
+
+// Music with 2-second fade-in
+play music dramatic_scene.mp3 fadein 2000
+
+// Looping music with fade-in
+play music ambient_music.ogg loop fadein 3000
+```
+
+### Play Sound
+
+Sound effects with optional looping and volume control.
+
+**Syntax:**
+```inky
+play sound <filename> [loop] [<volume>]
+```
+
+**Volume Range:** `0.0` (mute) to `1.0` (full volume)
+
+**Examples:**
+```inky
+// Simple sound effect
+play sound door_open.mp3
+
+// Sound at 50% volume
+play sound footsteps.wav 0.5
+
+// Looping ambient sound at 30% volume
+play sound school_ambience.mp3 loop 0.3
+
+// Quiet background sound
+play sound rain.ogg loop 0.2
+```
+
+### Stop Music
+
+Stop currently playing music with optional fade-out.
+
+**Syntax:**
+```inky
+stop music [fadeout <duration>]
+```
+
+**Examples:**
+```inky
+// Stop music immediately
+stop music
+
+// Stop with 1-second fade-out
+stop music fadeout 1000
+
+// Stop with long fade-out
+stop music fadeout 3000
+```
+
+### Stop Sound
+
+Stop all currently playing sound effects with optional fade-out.
+
+**Syntax:**
+```inky
+stop sound [fadeout <duration>]
+```
+
+**Examples:**
+```inky
+// Stop all sounds immediately
+stop sound
+
+// Stop all sounds with fade-out
+stop sound fadeout 500
+
+// Stop with smooth fade-out
+stop sound fadeout 1000
+```
+
+### Audio File Formats
+
+Supported formats (browser-dependent):
+- **MP3** - Best compatibility
+- **OGG** - Good quality, open format
+- **WAV** - Uncompressed, larger files
+- **M4A** - Apple devices
+
+**Recommendation:** Use MP3 for maximum compatibility.
+
+### Audio Asset Organization
+
+```
+public/assets/
+  music/          # Background music
+    bgm_school.mp3
+    bgm_dramatic.mp3
+    main_theme.mp3
+  sounds/         # Sound effects
+    door_open.mp3
+    footsteps.wav
+    school_ambience.mp3
+```
+
+### Complete Audio Example
+
+```inky
+== Start ==
+// Morning scene with ambient music
+scene Bedroom_Day
+play music morning_theme.mp3 loop fadein 2000
+Narrator "A peaceful morning begins..."
+
+== School ==
+// Transition to school with sound
+play sound door_open.mp3
+scene School_Hallway
+
+// Add ambient school sounds
+play sound school_ambience.mp3 loop 0.3
+
+show sayori happy at center
+Sayori "Good morning!"
+
+== DramaticScene ==
+// Stop current music and switch to dramatic
+stop music fadeout 1000
+play music dramatic_theme.mp3 fadein 1500
+
+Narrator "Something unexpected happens..."
+
+== Ending ==
+// Fade out all audio
+stop music fadeout 3000
+Narrator "The end."
+```
+
+### Audio Tips
+
+**Performance:**
+- Keep audio files optimized (compress music to 128-192 kbps)
+- Use shorter loops for ambient sounds
+- Preload critical audio files
+
+**Mixing:**
+```inky
+// Background music at normal volume
+play music bgm.mp3 loop
+
+// Ambient sounds at lower volume
+play sound rain.mp3 loop 0.2
+play sound wind.mp3 loop 0.15
+
+// Sound effects at full volume
+play sound door_slam.mp3
+```
+
+**Transitions:**
+```inky
+// Smooth scene transition
+stop music fadeout 2000
+scene NewLocation
+play music new_theme.mp3 fadein 2000
+```
+
+**Layering:**
+```inky
+// Multiple simultaneous sounds
+play sound ambient_crowd.mp3 loop 0.3
+play sound birds.mp3 loop 0.2
+play sound wind.mp3 loop 0.15
 ```
 
 ---
@@ -795,15 +1098,27 @@ For developers interested in the formal grammar:
 script          = { character_def | label }
 character_def   = "@char" identifier { attribute }
 attribute       = identifier ":" string
-label           = "==" identifier "=="
+label           = "==" identifier "==" { statement }
 statement       = dialogue | variable | command | choice | conditional | jump | comment
 dialogue        = identifier string
 variable        = "~" identifier ( "=" | "+=" | "-=" | "*=" | "/=" ) expression
-command         = ("scene" | "show" | "hide" | "clear" | ...) arguments
+command         = ("scene" | "show" | "hide" | "clear" | "play" | "stop" | "pause" | "wait") { argument }
 choice          = "*" [ "[" condition "]" ] string "->" identifier
-conditional     = "{" condition "}" { statement }
+conditional     = "{" condition "}" { statement } [ "{" "else" "}" { statement } ]
 jump            = "->" identifier
 comment         = "//" text
+
+expression      = literal | identifier | identifier "." identifier
+literal         = number | string | boolean
+number          = [ "-" ] digit { digit } [ "." digit { digit } ]
+string          = """ { char } """
+boolean         = "true" | "false"
+
+condition       = or_expr
+or_expr         = and_expr { "||" and_expr }
+and_expr        = comparison { "&&" comparison }
+comparison      = expression ( "==" | "!=" | ">" | "<" | ">=" | "<=" ) expression
+                | "(" condition ")"
 ```
 
 ---

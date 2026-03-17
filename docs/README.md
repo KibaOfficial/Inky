@@ -22,7 +22,7 @@ InkyScript is a simple, powerful scripting language for creating visual novels. 
 
 - **[Character System](../CHARACTER_SYSTEM.md)** - Character definitions and sprite system
 - **[Asset Reference](../ASSET_REFERENCE.md)** - Asset organization and management
-- **[Project Structure](../PROJECT_STRUCTURE.md)** - Codebase architecture
+- **[Project Structure](../packages/engine/)** - Engine package
 
 ## Quick Links
 
@@ -136,21 +136,28 @@ Player decisions:
 
 ### 5. Conditionals
 
-Branching logic:
+Branching logic with optional else:
 
 ```inky
 { condition }
-    content...
+    content if true...
+{ else }
+    content if false...
 ```
+
+Logical operators: `&&`, `||`, `()`
 
 ### 6. Commands
 
-Scene control:
+Scene and audio control:
 
 ```inky
 scene Background
 show character expression at position
 hide character
+play music bgm.mp3 loop fadein 2000
+play sound effect.mp3 0.5
+stop music fadeout 1000
 ```
 
 ## Documentation Structure
@@ -260,7 +267,7 @@ Start with a simple linear story, then add complexity gradually.
 
 ## Language Features by Version
 
-### Current Version: 1.0
+### Current Version: 1.2
 
 ✅ **Implemented**
 - Character definitions with attributes
@@ -268,17 +275,21 @@ Start with a simple linear story, then add complexity gradually.
 - Dialogue system
 - Variables (numbers, strings, booleans)
 - Commands (scene, show, hide, clear)
+- Audio system (play music/sound, stop music/sound, pause music)
+- Fade in/out effects for audio
+- Multiple simultaneous sound effects
 - Choices with conditions
-- Conditionals with operators
+- Conditionals with `{ else }` blocks
+- Logical operators (`&&`, `||`, parentheses)
 - String interpolation
 - Comments
 
 🚧 **Planned for Future**
-- Audio commands (play, stop)
-- Transitions and effects
+- Visual transitions and effects (fade, dissolve, wipe)
+- Screen effects (shake, flash)
+- Wait/timing commands
 - Save/load system
 - Rollback/history
-- Advanced expressions
 
 ## Contributing to Documentation
 
@@ -287,9 +298,8 @@ Found a mistake or want to improve the docs? Documentation is written in Markdow
 ## Additional Resources
 
 - **Main README**: [../README.md](../README.md)
-- **Character System**: [../CHARACTER_SYSTEM.md](../CHARACTER_SYSTEM.md)
-- **Asset Management**: [../ASSET_REFERENCE.md](../ASSET_REFERENCE.md)
-- **Project Structure**: [../PROJECT_STRUCTURE.md](../PROJECT_STRUCTURE.md)
+- **Engine Package**: [../packages/engine/](../packages/engine/)
+- **VSCode Extension**: [../packages/vscode-ext/](../packages/vscode-ext/)
 
 ---
 

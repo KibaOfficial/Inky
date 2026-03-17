@@ -298,8 +298,35 @@ Narrator "Thanks for playing!"
 ## Running Your Story
 
 1. Save your `.inky` file to `public/inks/`
-2. Run the development server: `npm run dev:react`
+2. Run the development server: `npm run dev`
 3. Open the browser and load your story!
+
+## Adding Audio (Optional)
+
+Enhance your story with background music and sound effects:
+
+```inky
+== Start ==
+scene Park_Day
+play music peaceful_day.mp3 loop fadein 2000
+
+Narrator "It's a beautiful sunny day at the park."
+
+play sound birds_chirping.mp3 loop 0.3
+```
+
+### Audio Commands Quick Guide
+
+- **Background Music**: `play music filename.mp3 loop fadein 1000`
+- **Sound Effects**: `play sound filename.mp3 loop 0.5`
+- **Stop Music**: `stop music fadeout 1000`
+- **Stop Sounds**: `stop sound fadeout 500`
+
+Place audio files in:
+- `public/assets/music/` for background music
+- `public/assets/sounds/` for sound effects
+
+See the [Audio System](./InkyScript-Language-Reference.md#audio-system) section for full details.
 
 ## Next Steps
 
