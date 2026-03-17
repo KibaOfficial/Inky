@@ -28,7 +28,7 @@
   },
   "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
   "indentationRules": {
-    "increaseIndentPattern": "^\\s*(\\{[^}]*$|\\*.*->.*$)",
-    "decreaseIndentPattern": "^\\s*\\}"
+    "increaseIndentPattern": "^\\s*\\{[^}]*\\}\\s*$",
+    "decreaseIndentPattern": "^\\s*\\{\\s*else\\s*\\}\\s*$"
   }
 }

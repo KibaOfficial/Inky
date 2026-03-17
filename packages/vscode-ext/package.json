@@ -68,12 +68,13 @@
   },
   "scripts": {
     "build": "tsc -p ./",
-    "compile": "vsce package",
+    "compile": "tsc -p ./ && npx @vscode/vsce package",
     "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
     "@types/vscode": "^1.99.0",
     "@types/node": "^22.x",
+    "@vscode/vsce": "^3.0.0",
     "typescript": "^5.9.3"
   }
 }
