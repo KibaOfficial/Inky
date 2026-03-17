@@ -1,0 +1,80 @@
+{
+  "name": "inkyscript",
+  "displayName": "InkyScript Language Support",
+  "description": "Syntax highlighting, IntelliSense and snippets for InkyScript visual novel scripting language",
+  "version": "1.1.0",
+  "publisher": "KibaOfficial",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Themes"
+  ],
+  "keywords": [
+    "inkyscript",
+    "inky",
+    "visual novel",
+    "vn",
+    "narrative"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kibaofficial/Inky.git"
+  },
+  "icon": "./images/inky-icon-256.png",
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "inkyscript",
+        "aliases": ["InkyScript", "inkyscript", "Inky"],
+        "extensions": [".inky"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/inky-icon-128.png",
+          "dark": "./images/inky-icon-128.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "inkyscript",
+        "scopeName": "source.inkyscript",
+        "path": "./syntaxes/inkyscript.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "inkyscript",
+        "path": "./snippets/inkyscript-snippets.json"
+      }
+    ],
+    "configurationDefaults": {
+      "editor.wordBasedSuggestions": "off",
+      "[inkyscript]": {
+        "editor.quickSuggestions": {
+          "other": true,
+          "comments": false,
+          "strings": true
+        },
+        "editor.suggestOnTriggerCharacters": true,
+        "editor.acceptSuggestionOnEnter": "on",
+        "editor.tabCompletion": "on",
+        "editor.snippetSuggestions": "inline"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "compile": "tsc -p ./ && npx @vscode/vsce package",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.99.0",
+    "@types/node": "^22.x",
+    "@vscode/vsce": "^3.0.0",
+    "typescript": "^5.9.3"
+  }
+}

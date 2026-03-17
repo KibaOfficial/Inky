@@ -1,0 +1,198 @@
+{
+  "Character Definition": {
+    "prefix": "char",
+    "body": [
+      "@char ${1:CharacterName}",
+      "\tname: \"${2:Display Name}\"",
+      "\tsprite: \"${3:sprite.png}\"",
+      "\tcolor: \"${4:#FF69B4}\"",
+      ""
+    ],
+    "description": "Define a new character"
+  },
+  "Character with Expression Template": {
+    "prefix": "charexp",
+    "body": [
+      "@char ${1:CharacterName}",
+      "\tname: \"${2:Display Name}\"",
+      "\tsprite: \"${1:charactername}/{expression}.png\"",
+      "\tcolor: \"${3:#FF69B4}\"",
+      ""
+    ],
+    "description": "Define a character with expression template"
+  },
+  "Label": {
+    "prefix": "label",
+    "body": [
+      "== ${1:LabelName} ==",
+      "${2:// Content}",
+      ""
+    ],
+    "description": "Create a new label"
+  },
+  "Start Label": {
+    "prefix": "start",
+    "body": [
+      "== Start ==",
+      "scene ${1:Opening_Scene}",
+      "Narrator \"${2:Welcome to the story!}\"",
+      ""
+    ],
+    "description": "Create the Start label"
+  },
+  "Dialogue": {
+    "prefix": "dia",
+    "body": [
+      "${1:Character} \"${2:Dialogue text}\""
+    ],
+    "description": "Character dialogue"
+  },
+  "Scene Change": {
+    "prefix": "scene",
+    "body": [
+      "scene ${1:SceneName}"
+    ],
+    "description": "Change the background scene"
+  },
+  "Scene with Transition": {
+    "prefix": "scenetrans",
+    "body": [
+      "scene ${1:SceneName} with ${2|fade,dissolve,wipeleft,wiperight|}"
+    ],
+    "description": "Change scene with transition effect"
+  },
+  "Show Character": {
+    "prefix": "show",
+    "body": [
+      "show ${1:character} ${2:expression} at ${3|left,center,right|}"
+    ],
+    "description": "Show a character on screen"
+  },
+  "Hide Character": {
+    "prefix": "hide",
+    "body": [
+      "hide ${1:character}"
+    ],
+    "description": "Hide a character"
+  },
+  "Variable Assignment": {
+    "prefix": "var",
+    "body": [
+      "~ ${1:variableName} = ${2:value}"
+    ],
+    "description": "Set a variable"
+  },
+  "Variable Increment": {
+    "prefix": "inc",
+    "body": [
+      "~ ${1:variableName} += ${2:1}"
+    ],
+    "description": "Increment a variable"
+  },
+  "Choice": {
+    "prefix": "choice",
+    "body": [
+      "* ${1:Choice text} -> ${2:TargetLabel}"
+    ],
+    "description": "Create a choice option"
+  },
+  "Conditional Choice": {
+    "prefix": "choiceif",
+    "body": [
+      "* [${1:condition}] ${2:Choice text} -> ${3:TargetLabel}"
+    ],
+    "description": "Create a conditional choice"
+  },
+  "Multiple Choices": {
+    "prefix": "choices",
+    "body": [
+      "* ${1:First choice} -> ${2:FirstLabel}",
+      "* ${3:Second choice} -> ${4:SecondLabel}",
+      "* ${5:Third choice} -> ${6:ThirdLabel}"
+    ],
+    "description": "Create multiple choices"
+  },
+  "Conditional Block": {
+    "prefix": "if",
+    "body": [
+      "{ ${1:condition} }",
+      "\t${2:// Content if true}",
+      ""
+    ],
+    "description": "Create a conditional block (if)"
+  },
+  "Conditional If/Else Block": {
+    "prefix": "ifelse",
+    "body": [
+      "{ ${1:condition} }",
+      "\t${2:// Content if true}",
+      "{ else }",
+      "\t${3:// Content if false}",
+      ""
+    ],
+    "description": "Create an if/else conditional block"
+  },
+  "Jump": {
+    "prefix": "jump",
+    "body": [
+      "-> ${1:TargetLabel}"
+    ],
+    "description": "Jump to a label"
+  },
+  "Play Music": {
+    "prefix": "music",
+    "body": [
+      "play music ${1:filename.mp3}${2: loop}${3: fadein 2000}"
+    ],
+    "description": "Play background music"
+  },
+  "Play Sound": {
+    "prefix": "sound",
+    "body": [
+      "play sound ${1:filename.mp3}${2: 0.5}"
+    ],
+    "description": "Play a sound effect"
+  },
+  "Stop Music": {
+    "prefix": "stopmusic",
+    "body": [
+      "stop music${1: fadeout 1000}"
+    ],
+    "description": "Stop music playback"
+  },
+  "String Interpolation": {
+    "prefix": "inter",
+    "body": [
+      "\"${1:Text with }{${2:variableName}}${3: interpolation}\""
+    ],
+    "description": "Insert variable in string"
+  },
+  "Full Character Scene": {
+    "prefix": "charscene",
+    "body": [
+      "== ${1:SceneName} ==",
+      "scene ${2:Background}",
+      "show ${3:character} ${4:happy} at center",
+      "",
+      "${3:Character} \"${5:Hello!}\"",
+      "",
+      "* ${6:Choice 1} -> ${7:Label1}",
+      "* ${8:Choice 2} -> ${9:Label2}"
+    ],
+    "description": "Complete scene with character and choices"
+  },
+  "Affection System": {
+    "prefix": "affection",
+    "body": [
+      "~ affection = ${1:0}",
+      "",
+      "{ affection >= ${2:10} }",
+      "\t${3:Character} \"${4:I really like you!}\"",
+      "\t~ affection += ${5:5}",
+      "{ else }",
+      "\t${3:Character} \"${6:Nice to meet you.}\"",
+      "\t~ affection += ${7:1}"
+    ],
+    "description": "Affection-based dialogue system using if/else"
+  }
+}

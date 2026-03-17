@@ -1,0 +1,232 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "InkyScript",
+  "scopeName": "source.inkyscript",
+  "fileTypes": ["inky"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#character-definition" },
+    { "include": "#labels" },
+    { "include": "#dialogue" },
+    { "include": "#variables" },
+    { "include": "#commands" },
+    { "include": "#choices" },
+    { "include": "#else-block" },
+    { "include": "#conditionals" },
+    { "include": "#jumps" },
+    { "include": "#strings" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.inkyscript",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "character-definition": {
+      "begin": "^\\s*(@char)\\s+(\\w+)\\s*$",
+      "beginCaptures": {
+        "1": { "name": "keyword.control.character.inkyscript" },
+        "2": { "name": "entity.name.type.character.inkyscript" }
+      },
+      "end": "^(?=\\s*(@char|==))",
+      "patterns": [
+        {
+          "match": "^\\s*(name|sprite|color)\\s*:\\s*\"([^\"]*)\"$",
+          "captures": {
+            "1": { "name": "variable.parameter.inkyscript" },
+            "2": { "name": "string.quoted.double.inkyscript" }
+          }
+        },
+        {
+          "match": "^\\s*(expressions)\\s*:\\s*(.*)$",
+          "captures": {
+            "1": { "name": "variable.parameter.inkyscript" },
+            "2": { "name": "meta.expressions.inkyscript" }
+          }
+        }
+      ]
+    },
+    "labels": {
+      "patterns": [
+        {
+          "match": "^\\s*(==)\\s*(\\w+)\\s*(==)\\s*$",
+          "captures": {
+            "1": { "name": "punctuation.definition.label.begin.inkyscript" },
+            "2": { "name": "entity.name.label.inkyscript" },
+            "3": { "name": "punctuation.definition.label.end.inkyscript" }
+          }
+        }
+      ]
+    },
+    "dialogue": {
+      "patterns": [
+        {
+          "match": "^\\s*(\\w+)\\s+(?=\")",
+          "captures": {
+            "1": { "name": "entity.name.character.inkyscript" }
+          }
+        },
+        {
+          "begin": "\"",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.inkyscript" }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.inkyscript" }
+          },
+          "name": "string.quoted.double.dialogue.inkyscript",
+          "patterns": [
+            {
+              "name": "constant.other.placeholder.inkyscript",
+              "match": "\\{[^}]+\\}"
+            }
+          ]
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "match": "^\\s*(~)\\s*(\\w+)\\s*(=|\\+=|-=|\\*=|/=)\\s*(.*)$",
+          "captures": {
+            "1": { "name": "keyword.operator.variable.inkyscript" },
+            "2": { "name": "variable.other.inkyscript" },
+            "3": { "name": "keyword.operator.assignment.inkyscript" },
+            "4": { "name": "meta.expression.inkyscript" }
+          }
+        }
+      ]
+    },
+    "commands": {
+      "patterns": [
+        {
+          "match": "^\\s*(scene)\\s+(\\w+)(?:\\s+(with)\\s+(\\w+))?\\s*$",
+          "captures": {
+            "1": { "name": "keyword.control.scene.inkyscript" },
+            "2": { "name": "entity.name.scene.inkyscript" },
+            "3": { "name": "keyword.operator.with.inkyscript" },
+            "4": { "name": "support.constant.transition.inkyscript" }
+          }
+        },
+        {
+          "match": "^\\s*(show)\\s+(\\w+)\\s+(\\w+)(?:\\s+(at)\\s+(left|center|right))?\\s*$",
+          "captures": {
+            "1": { "name": "keyword.control.show.inkyscript" },
+            "2": { "name": "entity.name.character.inkyscript" },
+            "3": { "name": "variable.parameter.expression.inkyscript" },
+            "4": { "name": "keyword.operator.at.inkyscript" },
+            "5": { "name": "support.constant.position.inkyscript" }
+          }
+        },
+        {
+          "match": "^\\s*(hide)\\s+(\\w+)(?:\\s+(with)\\s+(\\w+))?\\s*$",
+          "captures": {
+            "1": { "name": "keyword.control.hide.inkyscript" },
+            "2": { "name": "entity.name.character.inkyscript" },
+            "3": { "name": "keyword.operator.with.inkyscript" },
+            "4": { "name": "support.constant.transition.inkyscript" }
+          }
+        },
+        {
+          "match": "^\\s*(clear)\\s*$",
+          "captures": {
+            "1": { "name": "keyword.control.clear.inkyscript" }
+          }
+        },
+        {
+          "match": "^\\s*(play)\\s+(music|sound)\\s+([\\w\\.]+)(?:\\s+(loop))?(?:\\s+(fadein)\\s+([\\d\\.]+))?(?:\\s+([\\d\\.]+))?\\s*$",
+          "captures": {
+            "1": { "name": "keyword.control.play.inkyscript" },
+            "2": { "name": "keyword.other.audio-type.inkyscript" },
+            "3": { "name": "string.unquoted.filename.inkyscript" },
+            "4": { "name": "keyword.other.loop.inkyscript" },
+            "5": { "name": "keyword.other.fadein.inkyscript" },
+            "6": { "name": "constant.numeric.inkyscript" },
+            "7": { "name": "constant.numeric.volume.inkyscript" }
+          }
+        },
+        {
+          "match": "^\\s*(stop)\\s+(music)(?:\\s+(fadeout)\\s+([\\d\\.]+))?\\s*$",
+          "captures": {
+            "1": { "name": "keyword.control.stop.inkyscript" },
+            "2": { "name": "keyword.other.audio-type.inkyscript" },
+            "3": { "name": "keyword.other.fadeout.inkyscript" },
+            "4": { "name": "constant.numeric.inkyscript" }
+          }
+        }
+      ]
+    },
+    "choices": {
+      "patterns": [
+        {
+          "match": "^\\s*(\\*)(?:\\s*\\[(.*?)\\])?\\s*(.+?)\\s*(->)\\s*(\\w+)\\s*$",
+          "captures": {
+            "1": { "name": "punctuation.definition.choice.inkyscript" },
+            "2": { "name": "meta.condition.choice.inkyscript" },
+            "3": { "name": "string.choice.text.inkyscript" },
+            "4": { "name": "keyword.operator.arrow.inkyscript" },
+            "5": { "name": "entity.name.label.target.inkyscript" }
+          }
+        }
+      ]
+    },
+    "else-block": {
+      "patterns": [
+        {
+          "match": "^\\s*(\\{)\\s*(else)\\s*(\\})\\s*$",
+          "captures": {
+            "1": { "name": "punctuation.definition.conditional.begin.inkyscript" },
+            "2": { "name": "keyword.control.else.inkyscript" },
+            "3": { "name": "punctuation.definition.conditional.end.inkyscript" }
+          }
+        }
+      ]
+    },
+    "conditionals": {
+      "begin": "^\\s*(\\{)\\s*(.+?)\\s*(\\})\\s*$",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.conditional.begin.inkyscript" },
+        "2": { "name": "meta.condition.inkyscript" },
+        "3": { "name": "punctuation.definition.conditional.end.inkyscript" }
+      },
+      "end": "^(?=\\s*(\\{|==|$))",
+      "patterns": [
+        { "include": "#dialogue" },
+        { "include": "#variables" },
+        { "include": "#commands" },
+        { "include": "#jumps" },
+        { "include": "#comments" }
+      ]
+    },
+    "jumps": {
+      "patterns": [
+        {
+          "match": "^\\s*(->)\\s*(\\w+)\\s*$",
+          "captures": {
+            "1": { "name": "keyword.operator.jump.inkyscript" },
+            "2": { "name": "entity.name.label.target.inkyscript" }
+          }
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.inkyscript",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.other.placeholder.inkyscript",
+              "match": "\\{[^}]+\\}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
