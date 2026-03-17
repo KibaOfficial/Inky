@@ -178,6 +178,8 @@ Sayori "That's great! Let's go to class."
 
 Variables store story state (numbers, strings, booleans).
 
+> **Note:** InkyScript intentionally supports only **primitive types** (number, string, boolean). There are no arrays or objects. This keeps the language simple and focused on narrative.
+
 ### Syntax
 
 **Assignment**
@@ -195,11 +197,11 @@ Variables store story state (numbers, strings, booleans).
 
 ### Value Types
 
-| Type | Examples |
-|------|----------|
-| Number | `10`, `-5`, `0` |
-| String | `"Hello"`, `"Player"` |
-| Boolean | `true`, `false` |
+| Type | Examples | Use case |
+|------|----------|---------|
+| Number | `10`, `-5`, `3.14` | Counters, scores, affection |
+| String | `"Hello"`, `"Alex"` | Names, flags with labels |
+| Boolean | `true`, `false` | Flags, switches |
 
 ### Examples
 
@@ -365,7 +367,7 @@ Sayori "Want to have lunch together?"
 * Stay quiet -> Neutral
 ```
 
-Choices with conditions only appear if the condition is true.
+Choices with conditions only appear if the condition is true. The condition is evaluated **before rendering** — disabled choices are hidden entirely from the player, not greyed out.
 
 **Multiple Choices**
 ```inky
@@ -387,11 +389,35 @@ Execute content based on conditions.
 
 ```inky
 { condition }
-    content...
-    content...
+    content if true...
+{ else }
+    content if false...
 ```
 
-### Operators
+The `{ else }` block is optional.
+
+### Sequential Condition Blocks
+
+Multiple condition blocks in sequence are **independent** — each is evaluated separately. They are **not** chained as . Use  explicitly when you want mutually exclusive branches.
+
+```inky
+// These two are evaluated independently (both can execute if both are true)
+{ affection >= 5 }
+    Sayori "You are kind."
+
+{ affection >= 10 }
+    Sayori "You are amazing!"
+
+// Use else for mutually exclusive branches
+{ affection >= 10 }
+    Sayori "You are amazing!"
+    -> GoodEnding
+{ else }
+    Sayori "We just met."
+    -> NeutralEnding
+```
+
+### Comparison Operators
 
 | Operator | Meaning | Example |
 |----------|---------|---------|
@@ -402,6 +428,16 @@ Execute content based on conditions.
 | `>=` | Greater or equal | `affection >= 15` |
 | `<=` | Less or equal | `level <= 3` |
 
+### Logical Operators
+
+Combine conditions with logical operators. Precedence: `&&` before `||`, use parentheses to override.
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `&&` | And | `affection >= 10 && knowsSecret == true` |
+| `\|\|` | Or | `trust >= 5 \|\| isOldFriend == true` |
+| `()` | Grouping | `(affection >= 10 && knowsSecret) \|\| trust >= 20` |
+
 ### Examples
 
 **Simple Conditional**
@@ -411,19 +447,24 @@ Execute content based on conditions.
     -> GoodEnding
 ```
 
-**Multiple Conditionals**
+**If / Else**
 ```inky
-{ affection >= 15 }
-    Sayori "I love you!"
-    -> BestEnding
-
-{ affection >= 5 }
-    Sayori "You're a good friend."
+{ affection >= 10 }
+    Sayori "I really like you!"
     -> GoodEnding
+{ else }
+    Sayori "Nice to meet you."
+    -> NeutralEnding
+```
 
-{ affection < 5 }
-    Sayori "See you around."
-    -> NormalEnding
+**Logical Operators**
+```inky
+{ affection >= 10 && knowsSecret == true }
+    Sayori "I trust you completely."
+    -> TrueEnding
+
+{ trust >= 5 || isOldFriend == true }
+    Sayori "Good to see you again!"
 ```
 
 **Conditionals with Choices**
@@ -433,8 +474,7 @@ Execute content based on conditions.
 
     * Sure! -> WalkTogether
     * I have plans -> Decline
-
-{ affection < 10 }
+{ else }
     Narrator "She doesn't seem interested in talking."
     -> EndDay
 ```
@@ -503,8 +543,17 @@ Sayori "Hi {playerName}! Nice to meet you!"
 ```
 
 **Character Attributes**
+
+Any attribute defined on a character via `@char` can be accessed with `{CharName.attribute}`.
+
+| Access | Example | Returns |
+|--------|---------|---------|
+|  |  | Display name |
+|  |  | Hex color string |
+|  |  | Sprite path/template |
+
 ```inky
-Narrator "Her name is {Sayori.name}."
+Narrator "Her name is {Sayori.name} and her color is {Sayori.color}."
 ```
 
 **Multiple Variables**
@@ -1049,15 +1098,27 @@ For developers interested in the formal grammar:
 script          = { character_def | label }
 character_def   = "@char" identifier { attribute }
 attribute       = identifier ":" string
-label           = "==" identifier "=="
+label           = "==" identifier "==" { statement }
 statement       = dialogue | variable | command | choice | conditional | jump | comment
 dialogue        = identifier string
 variable        = "~" identifier ( "=" | "+=" | "-=" | "*=" | "/=" ) expression
-command         = ("scene" | "show" | "hide" | "clear" | ...) arguments
+command         = ("scene" | "show" | "hide" | "clear" | "play" | "stop" | "pause" | "wait") { argument }
 choice          = "*" [ "[" condition "]" ] string "->" identifier
-conditional     = "{" condition "}" { statement }
+conditional     = "{" condition "}" { statement } [ "{" "else" "}" { statement } ]
 jump            = "->" identifier
 comment         = "//" text
+
+expression      = literal | identifier | identifier "." identifier
+literal         = number | string | boolean
+number          = [ "-" ] digit { digit } [ "." digit { digit } ]
+string          = """ { char } """
+boolean         = "true" | "false"
+
+condition       = or_expr
+or_expr         = and_expr { "||" and_expr }
+and_expr        = comparison { "&&" comparison }
+comparison      = expression ( "==" | "!=" | ">" | "<" | ">=" | "<=" ) expression
+                | "(" condition ")"
 ```
 
 ---

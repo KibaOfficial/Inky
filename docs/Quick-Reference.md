@@ -67,16 +67,29 @@ stop sound [fadeout <ms>]                       # Stop all sounds
 
 ```inky
 { condition }
-    content...
+    content if true...
+{ else }
+    content if false...
 ```
 
-### Operators
+### Comparison Operators
 - `==` Equal
 - `!=` Not equal
 - `>` Greater than
 - `<` Less than
 - `>=` Greater or equal
 - `<=` Less or equal
+
+### Logical Operators
+- `&&` And (both must be true)
+- `||` Or (at least one must be true)
+- `()` Parentheses for grouping
+
+```inky
+{ affection >= 10 && knowsSecret == true }
+{ trust >= 5 || isOldFriend == true }
+{ (affection >= 10 && knowsSecret) || trust >= 20 }
+```
 
 ## Jumps
 
@@ -127,6 +140,8 @@ Sayori "That's rude..."
 == End ==
 { affection >= 10 }
     Sayori "Let's be friends!"
+{ else }
+    Sayori "See you around."
 
 Narrator "The end."
 ```

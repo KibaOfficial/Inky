@@ -9,51 +9,46 @@
 
 > A Ren'Py-inspired Visual Novel Engine built with TypeScript and React
 
-## 🎮 About
+## About
 
-**Inky** is a complete Visual Novel/Narrative Engine for the web, inspired by Ren'Py. It features its own scripting language **InkyScript** (`.inky` files) for writing interactive stories with choices, variables, and conditions.
+**Inky** is a web-based Visual Novel / Narrative Engine with its own scripting language, **InkyScript** (`.inky` files). Write interactive stories with dialogue, choices, variables, conditions, and audio — no programming knowledge required.
 
-## ✨ Features
+## Monorepo Structure
 
-### InkyScript DSL
-- 📝 **Labels & Jumps** - Story sections and navigation
-- 💬 **Dialogues** - Character conversations with typewriter effects
-- 🎯 **Choices** - Player decisions with branching paths
-- 🔢 **Variables** - Dynamic story state management
-- ⚡ **Conditions** - If/else logic for branching narratives
-- 🎨 **Commands** - Scene management, character sprites, audio
-- 👤 **Character System** - Character definitions with sprites and colors
-- 🖼️ **Sprite System** - Dynamic character expressions with placeholder support
+```
+Inky/
+├── packages/
+│   ├── engine/        # @inky/engine — React + Vite player (v1.2.0)
+│   └── vscode-ext/    # InkyScript VSCode Extension (v1.1.0)
+├── docs/              # InkyScript language documentation
+├── package.json       # pnpm workspace root
+└── pnpm-workspace.yaml
+```
 
-### Engine Components
-- ⚡️ **Vite** - Lightning fast development
-- ⚙️ **React** - Modern UI framework
-- 🎨 **Tailwind CSS** - Modern UI styling
-- 📘 **TypeScript** - Type-safe codebase
-- 🔧 **Lexer + Parser** - Custom DSL compiler
-- 🎭 **Interpreter** - Runtime execution engine with step-by-step execution
-- 🎮 **Visual Novel Player** - Complete React-based player UI
+## Quick Start
 
-## 📚 InkyScript Syntax
+```bash
+pnpm install
+
+pnpm dev          # Start the engine dev server
+pnpm build        # Build the engine
+pnpm build:ext    # Compile the VSCode extension
+```
+
+## InkyScript
 
 ```inky
-// Character Definitions
-@char MC
-    name: "Player"
-    sprite: "Player.png"
-    color: "#4A90E2"
-
 @char Sayori
     name: "Sayori"
     sprite: "sayori/{expression}.png"
     color: "#FF69B4"
 
-// Story Start
 == Start ==
 scene school_hallway
 ~ affection = 0
 
 Narrator "Welcome to Inky!"
+show sayori happy at center
 Sayori "Hi! How are you?"
 
 * Say something nice -> NicePath
@@ -62,163 +57,84 @@ Sayori "Hi! How are you?"
 
 == NicePath ==
 ~ affection += 10
-show sayori happy at center
 Sayori "That's so sweet!"
 
 { affection >= 10 }
     Sayori "I really like you!"
     -> GoodEnding
+{ else }
+    -> NeutralEnding
 
--> End
-
-== End ==
-Narrator "Thanks for playing!"
+== GoodEnding ==
+Narrator "You made a friend today."
 ```
 
-See the demo script at `public/inks/demo-school-day.inky` for a complete example.
+See [docs/](docs/) for full language documentation.
 
-## 🚀 Getting Started
-
-### Installation
-
-```bash
-npm install
-```
-
-### Development Mode
-
-```bash
-# Run the React-based player
-npm run dev
-```
-
-Then open http://localhost:3000/index.html
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-## 📖 Documentation
+## Features
 
 ### InkyScript Language
+- Labels & Jumps — story sections and navigation
+- Dialogue — character conversations with typewriter effect
+- Choices — branching decisions, with optional conditions
+- Variables — dynamic story state (`=`, `+=`, `-=`, `*=`, `/=`)
+- Conditionals — `{ condition }` / `{ else }` blocks
+- Logical operators — `&&`, `||`, parentheses, correct precedence
+- String interpolation — `{variableName}`, `{Char.attribute}`
+- Commands — scene, show, hide, clear, audio
+- Character System — sprite templates with `{expression}` placeholder
+- Audio System — music and sound effects with fade in/out
 
-- **[InkyScript Documentation](docs/README.md)** - Complete language documentation
-- **[Getting Started Guide](docs/Getting-Started.md)** - Learn InkyScript in 10 minutes
-- **[Language Reference](docs/InkyScript-Language-Reference.md)** - Complete syntax guide
-- **[Quick Reference](docs/Quick-Reference.md)** - Syntax cheat sheet
-- **[Examples](docs/Examples.md)** - Example scripts and patterns
+### Engine
+- Vite 8 + React 19 + TypeScript 5 + Tailwind CSS 4
+- Custom Lexer → Parser → Runtime → StepInterpreter pipeline
+- Runtime as single source of truth for all story state
+- Iterative step execution (no recursion)
+- Clean story-end handling
 
-### Engine Documentation
+### VSCode Extension
+- Syntax highlighting for `.inky` files
+- IntelliSense: characters, labels, commands, variables
+- `{ else }` completion and hover
+- Diagnostics: undefined characters, undefined jump targets
+- Go to Definition, Document Outline, Snippets
 
-- **[Character System](CHARACTER_SYSTEM.md)** - Character definition and sprite system
-- **[Asset Reference](ASSET_REFERENCE.md)** - Asset organization and usage
-- **[Project Structure](PROJECT_STRUCTURE.md)** - Codebase architecture
-- **[Path Fixes](PATH_FIXES.md)** - Asset path resolution details
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────┐
-│              .inky Script File                   │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  ↓
-┌─────────────────────────────────────────────────┐
-│              Lexer (Tokenizer)                   │
-│  Converts text → Tokens (Label, Dialogue, etc)  │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  ↓
-┌─────────────────────────────────────────────────┐
-│              Parser (AST Builder)                │
-│  Converts Tokens → Abstract Syntax Tree (AST)   │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  ↓
-┌─────────────────────────────────────────────────┐
-│          StepInterpreter (Runtime)               │
-│  Executes AST step-by-step for UI integration   │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  ↓
-┌─────────────────────────────────────────────────┐
-│           InkyPlayer (React UI)                  │
-│  Renders visual novel with scenes & characters  │
-└─────────────────────────────────────────────────┘
-```
-
-## 📂 Project Structure
+## Architecture
 
 ```
-Inky/
-├── public/
-│   ├── inks/                  # InkyScript files
-│   │   └── demo-school-day.inky
-│   └── assets/
-│       ├── backgrounds/       # Scene backgrounds
-│       └── characters/        # Character sprites
-├── src/
-│   ├── core/
-│   │   ├── inkyscript/
-│   │   │   ├── Lexer.ts       # Tokenizer
-│   │   │   ├── Parser.ts      # AST Generator
-│   │   │   ├── Interpreter.ts # Basic interpreter
-│   │   │   ├── StepInterpreter.ts # UI-integrated interpreter
-│   │   │   ├── Runtime.ts     # State management
-│   │   │   ├── InkyEngine.ts  # Main engine class
-│   │   │   ├── Renderer.ts    # Command renderer
-│   │   │   └── types.ts       # Type definitions
-│   │   └── UI/
-│   │       ├── InkyPlayer.tsx # Main player component
-│   │       ├── VisualNovelView.tsx
-│   │       ├── DialogueBox.tsx
-│   │       ├── ChoiceBox.tsx
-│   │       ├── Scene.tsx
-│   │       └── Character.tsx
-│   └── main.tsx               # React entry point
-└── index.html                 # HTML entry point
+.inky File
+    │
+    ▼
+Lexer (Tokenizer)
+    │  text → tokens
+    ▼
+Parser (AST Builder)
+    │  tokens → AST
+    ▼
+Runtime (Single Source of Truth)
+    │  variables, characters, position, stack
+    ▼
+StepInterpreter (Executor)
+    │  iterative node-by-node execution
+    ▼
+Renderer (Bridge)
+    │  AST nodes → VisualNovelState + Audio
+    ▼
+InkyPlayer (React UI)
+    │  scene, dialogue, choices, characters
 ```
 
-## 🎯 Current Status
+## Documentation
 
-### ✅ Completed
-- [x] InkyScript DSL specification
-- [x] Lexer (Tokenizer) - All patterns working
-- [x] Parser (AST Builder) - Complete AST generation
-- [x] StepInterpreter - Step-by-step execution for UI
-- [x] Runtime - Variable & state management
-- [x] Character System - Definitions with attributes
-- [x] Sprite System - Dynamic expressions with placeholders
-- [x] React UI - Complete visual novel player
-- [x] Scene Management - Background rendering
-- [x] Dialogue System - Typewriter effect
-- [x] Choice System - Interactive branching
-- [x] Conditional Logic - Dynamic story flow
+- [Getting Started](docs/Getting-Started.md)
+- [Language Reference](docs/InkyScript-Language-Reference.md)
+- [Quick Reference](docs/Quick-Reference.md)
+- [Examples](docs/Examples.md)
 
-### 🚧 Potential Improvements
-- [ ] Save/Load System
-- [ ] Rollback/History
-- [ ] Transitions & Animations
-- [ ] Audio System
-- [ ] Dev Tools (Debugger, Script Editor)
+## License
 
-## 🤝 Contributing
-
-This is a personal learning project built in an afternoon, but feedback and suggestions are welcome!
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🎮 Inspiration
-
-Inspired by:
-- **Ren'Py** - Visual Novel engine
+MIT — see [LICENSE](LICENSE)
 
 ---
 
-**Inky** - *Write Stories, Not Code* ✨
-
-Made with ❤️ using Vite, React, Tailwind CSS, and TypeScript
+*Inky — Write Stories, Not Code*

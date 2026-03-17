@@ -1,0 +1,12 @@
+.vscode/**
+.vscode-test/**
+src/**
+.gitignore
+tsconfig.json
+vsc-extension-quickstart.md
+*.vsix
+*.map
+node_modules/**
+!node_modules/vscode-nls/**
+!node_modules/vscode-nls-dev/**
+images/icon-placeholder.md
