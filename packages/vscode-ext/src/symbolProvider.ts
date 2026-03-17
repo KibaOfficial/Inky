@@ -105,7 +105,7 @@ export class InkyScriptDocumentSymbolProvider implements vscode.DocumentSymbolPr
             }
             
             // Variables
-            const varMatch = line.match(/~\s*(\w+)\s*=/);
+            const varMatch = line.match(/~\s*(\w+)\s*(\+|-|\*|\/)?=/);
             if (varMatch) {
                 const varName = varMatch[1];
                 if (!variablesSet.has(varName)) {
